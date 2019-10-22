@@ -1,15 +1,68 @@
-print("Loading libraries: optparse,Matrix")
+print('==========================================================')
+print("Loading libraries: optparse, Matrix, dplyr, pagoda2, conos")
 library("optparse")
 library("Matrix")
 library("dplyr")
 library("pagoda2")
 library("conos")
+print("Loaded libraries: optparse, Matrix, dplyr, pagoda2, conos")
+print('==========================================================')
+
+# # ====================================
+# # PARAMETERS for pagoda2
+# setk = 40
+# setperplexity = 30
+# setodgenes = 6000
+# # ====================================
+# # PARAMETERS for PCA/cPCA
+# con_space='PCA' # option PCA or CPCA
+# con_comps=100
+# con_odgenes=6000
+# # ====================================
+
 
 # Parse input arguments
 parser = OptionParser()
-
+# ====================================
 parser <- add_option(parser, c("--file_list"), help = "List of files to load.")
+# ====================================
+# PARAMETERS for pagoda2
+parser <- add_option(parser, c("--k"), type='integer', default=40, help = "Pagoda2: default number of neighbors to use in kNN graph")
+parser <- add_option(parser, c("--perplexity"),type='integer', default=50, help = "Pagoda2: perplexity to use in generating tSNE and largeVis embeddings (default=50)")
+parser <- add_option(parser, c("--pagoda_odgenes"),type='integer', default=3000, help = "Pagoda2: number of top overdispersed genes to use (default=3e3)")
+# ====================================
+# PARAMETERS for PCA/cPCA
+parser <- add_option(parser, c("--projection_method"),type='character',default='PCA', help = "Whether to perform PCA or CPCA")
+parser <- add_option(parser, c("--ncomps"),type='integer', default=50, help = "How many PCA components to use (?) (default=50)")
+parser <- add_option(parser, c("--conos_odgenes"),type='integer', default=1000, help = "Pagoda2: number of top overdispersed genes to use (default=1e3)")
+# ====================================
+print('==========================================================')
 args <- parse_args(parser)
+print('Parameters used:')
+print(args)
+print('==========================================================')
+# ====================================
+# PARAMETERS for pagoda2
+setk = args$k
+setperplexity = args$perplexity
+setodgenes = args$pagoda_odgenes
+# ====================================
+# PARAMETERS for PCA/cPCA
+if((args$projection_method == 'PCA') || (args$projection_method == 'pca') ){
+  con_space= 'PCA'
+}else{
+        if((args$projection_method == 'CPCA') || (args$projection_method == 'cpca') ){
+        con_space= 'CPCA'
+        }else{
+        print('projection_method not recognized, only PCA or CPCA are acceptable; value provided was')
+        print(args$projection_method)
+        quit()
+        }
+      }
+con_comps=args$ncomps
+con_odgenes=args$conos_odgenes
+# ====================================
+
 
 print(args$file_list)
 con <- file(args$file_list, open = "r")
@@ -41,10 +94,6 @@ print(str(panel,1))
 print(head(colnames(panel[[1]])))
 print(any(duplicated(unlist(lapply(panel,colnames)))))
 
-##PARAMETERS
-setk = 40
-setperplexity = 30
-setodgenes = 6000
 
 panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene=1, k=setk, perplexity=setperplexity , n.odgenes=setodgenes, get.largevis=FALSE, make.geneknn=FALSE)
 con <- Conos$new(panel.preprocessed, n.cores=1)
@@ -56,11 +105,6 @@ png("Sample_Independent_Clusters.png", width=16, height=9, units = 'in', res=300
 # print(con)
 print(con$plotPanel(clustering="multilevel", use.local.clusters=T, title.size=4))
 dev.off()
-
-# PARAMETERS
-con_space='PCA' # option PCA or CPCA
-con_comps=100
-con_odgenes=6000
 
 panel.preprocessed <- NULL
 gc()
