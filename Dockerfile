@@ -18,6 +18,7 @@ RUN mkdir /job_1234
 
 RUN R -e 'install.packages("optparse",repos = "http://cran.us.r-project.org")'
 
+COPY src /module
 
 # build using this:
-# docker build -t genepattern/conos:1.0 .
+# docker build -t genepattern/conos:1.1 .

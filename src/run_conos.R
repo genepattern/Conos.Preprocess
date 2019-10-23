@@ -119,4 +119,10 @@ write.table(con$getDatasetPerCell(), file = "Cell_to_Sample_Memberships.txt", se
 png("CPCA_Variance.png", width=16, height=9, units = 'in', res=300)
 print(plotComponentVariance(con, space=con_space))
 
+# Save an object to a file
+saveRDS(con, "conos_object.rds")
+print('saved conos_object.rds')
+# # Restore the object
+# readRDS(file = "conos_object.rds") # reads in a varaible called 'con'
+
 print('Done!')
