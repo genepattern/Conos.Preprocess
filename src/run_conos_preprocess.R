@@ -94,9 +94,9 @@ print(str(panel,1))
 print(head(colnames(panel[[1]])))
 print(any(duplicated(unlist(lapply(panel,colnames)))))
 
-
+print("About to save figures.")
 panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene=1, k=setk, perplexity=setperplexity , n.odgenes=setodgenes, get.largevis=FALSE, make.geneknn=FALSE)
-con <- Conos$new(panel.preprocessed, n.cores=1)
+con <- Conos$new(panel.preprocessed, n.cores=1) # n.cores=1 is just so TNSE is reproducible. This is okay for smaller datastets, I have not tested it on larger ones.
 panel <- NULL
 gc()
 png("Sample_Independent_Clusters.png", width=16, height=9, units = 'in', res=300)
@@ -105,6 +105,7 @@ png("Sample_Independent_Clusters.png", width=16, height=9, units = 'in', res=300
 # print(con)
 print(con$plotPanel(clustering="multilevel", use.local.clusters=T, title.size=4))
 dev.off()
+print("Done saving figures.")
 
 panel.preprocessed <- NULL
 gc()
@@ -115,13 +116,18 @@ print(paste("Finished Projections:", Sys.time()))
 ## Write a table of Cell to Sample Relationships useful for later
 write.table(con$getDatasetPerCell(), file = "Cell_to_Sample_Memberships.txt", sep="\t", quote= FALSE, col.names = FALSE)
 
+print("About to save figures.")
 ## Capture CPCA communities variance
 png("CPCA_Variance.png", width=16, height=9, units = 'in', res=300)
 print(plotComponentVariance(con, space=con_space))
+print("Done saving figures.")
+
 
 # Save an object to a file
-saveRDS(con, "conos_object.rds")
+saveRDS(list(con=con,con_space=con_space), "conos_object.rds")
 print('saved conos_object.rds')
+
+
 # # Restore the object
 # readRDS(file = "conos_object.rds") # reads in a varaible called 'con'
 

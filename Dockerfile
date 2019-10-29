@@ -7,6 +7,8 @@ ENV LANG=C LC_ALL=C
 
 USER root
 
+RUN apt-get install time
+
 RUN mkdir /module
 RUN mkdir /job_1234
 
@@ -21,4 +23,4 @@ RUN R -e 'install.packages("optparse",repos = "http://cran.us.r-project.org")'
 COPY src /module
 
 # build using this:
-# docker build -t genepattern/conos:1.1 .
+# docker build -t genepattern/conos:1.2 .
