@@ -1,18 +1,23 @@
 #Conos.Preprocess
 #Wed Oct 23 18:50:29 UTC 2019
 JVMLevel=
-LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:94\:2
+LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:94\:0.9
 author=Edwin F. Juarez & Anthony Castanza;UCSD -- Mesirov Lab
 categories=Clustering;SingleCell
-commandLine=Rscript /module/run_conos.R --file_list <file_list> --k <knn> --perplexity <perplexity> --pagoda_odgenes <pagoda_odgenes> --projection_method <projection_method> --ncomps <ncomps> --conos_odgenes <conos_odgenes>
+
+commandLine=Rscript /module/run_conos_preprocess.R --file_list <file_list> --k <knn> --perplexity <perplexity> --pagoda_odgenes <pagoda_odgenes> --projection_method <projection_method> --ncomps <ncomps> --conos_odgenes <conos_odgenes>
+
 cpuType=any
 description=GenePattern Module which implements the preprocessing and PCA steps of Conos
 fileFormat=png;rds
+
 job.docker.image=genepattern/conos\:1.2
 job.memory=4Gb
+
 language=R
 name=Conos.Preprocess
 os=any
+
 p1_MODE=IN
 p1_TYPE=FILE
 p1_default_value=
@@ -26,6 +31,7 @@ p1_prefix=
 p1_prefix_when_specified=
 p1_type=java.io.File
 p1_value=
+
 p2_MODE=
 p2_TYPE=Integer
 p2_default_value=40
@@ -39,6 +45,7 @@ p2_prefix=
 p2_prefix_when_specified=
 p2_type=java.lang.Integer
 p2_value=
+
 p3_MODE=
 p3_TYPE=Integer
 p3_default_value=50
@@ -52,6 +59,7 @@ p3_prefix=
 p3_prefix_when_specified=
 p3_type=java.lang.Integer
 p3_value=
+
 p4_MODE=
 p4_TYPE=Integer
 p4_default_value=3000
@@ -65,6 +73,7 @@ p4_prefix=
 p4_prefix_when_specified=
 p4_type=java.lang.Integer
 p4_value=
+
 p5_MODE=
 p5_TYPE=TEXT
 p5_default_value=PCA
@@ -78,6 +87,7 @@ p5_prefix=
 p5_prefix_when_specified=
 p5_type=java.lang.String
 p5_value=PCA\=PCA;CPCA\=CPCA
+
 p6_MODE=
 p6_TYPE=Integer
 p6_default_value=50
@@ -91,6 +101,7 @@ p6_prefix=
 p6_prefix_when_specified=
 p6_type=java.lang.Integer
 p6_value=
+
 p7_MODE=
 p7_TYPE=TEXT
 p7_default_value=1000
@@ -104,9 +115,10 @@ p7_prefix=
 p7_prefix_when_specified=
 p7_type=java.lang.String
 p7_value=
+
 privacy=private
 quality=development
-taskDoc=
+taskDoc=doc.html
 taskType=Clustering
 userid=edjuaro
 version=Initial version
