@@ -127,7 +127,6 @@ print("Done saving figures.")
 saveRDS(list(con=con,con_space=con_space), "conos_object.rds")
 print('saved conos_object.rds')
 
-
 # # Restore the object
 # readRDS(file = "conos_object.rds") # reads in a varaible called 'con'
 

@@ -8,3 +8,10 @@ This is step 1 of 3 in the Conos pipeline. This module will read single cell dat
 >[Documentation incomplete]
 
 More details in the original package: https://github.com/hms-dbmi/conos
+
+The module ends by saving some variables to file:
+```
+# Save an object to a file
+saveRDS(list(con=con,con_space=con_space), "conos_object.rds")
+print('saved conos_object.rds')
+```
