@@ -124,8 +124,8 @@ print("Done saving figures.")
 
 
 # Save an object to a file
-saveRDS(list(con=con,con_space=con_space), "conos_object.rds")
-print('saved conos_object.rds')
+saveRDS(list(con=con,con_space=con_space), "conos_preprocess_output.rds")
+print('saved conos_preprocess_output.rds')
 
 # # Restore the object
 # readRDS(file = "conos_object.rds") # reads in a varaible called 'con'

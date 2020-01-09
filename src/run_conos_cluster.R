@@ -36,7 +36,7 @@ parser <- add_option(parser, c("--walktrap_steps"),type='integer', default=10, h
 # ====================================
 # PARAMETERS for UMPAP
 parser <- add_option(parser, c("--umap_distance"),type='double',default=0.05, help = "UMAP Minimum Distance (default: 0.05)")
-parser <- add_option(parser, c("--umap_spread"),type='double', default=5.0, help = "UMAP Spread (default: 5.0")
+parser <- add_option(parser, c("--umap_spread"),type='double', default=5.0, help = "UMAP Spread (default: 5.0)")
 # ====================================
 print('==========================================================')
 args <- parse_args(parser)
@@ -125,7 +125,7 @@ udist <- umap_distance
 uspread <- umap_spread
 
 print(paste("Begin UMAP Embedding:", Sys.time()))
-con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=4) # n.cores=1 led to some incredibly slow times on sample data locally.
+con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=3) # n.cores=1 led to some incredibly slow times on sample data locally.
 print(paste("Finished UMAP Embedding:", Sys.time()))
 
 print("About to save figures.")
@@ -157,7 +157,7 @@ con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend
 dev.off()
 }
 
-if(runleiden == TRUE & runwalktrap == TRUE)
+if(runleiden == TRUE & runwalktrap == TRUE){
 ## Capture comparison of Walktrap and Leiden clusters in UMAP Space
 png("Leiden_vs_Walktrap_Clusters.png", width=16, height=9, units = 'in', res=300)
 print(cowplot::plot_grid(
@@ -165,14 +165,15 @@ con$plotGraph(alpha=0.1, clustering='leiden'),
 con$plotGraph(alpha=0.1, clustering='walktrap'),
 con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
 dev.off()
+}
 
 print("Done saving figures.")
 
 # Return runleiden, runwalktrap
 
 # Save an object to a file
-saveRDS(list(con=con,runleiden=runleiden,runwalktrap=runwalktrap), "conos_object.rds")
-print('saved conos_object.rds')
+saveRDS(list(con=con,runleiden=runleiden,runwalktrap=runwalktrap), "conos_cluster_output.rds")
+print('saved conos_cluster_output.rds')
 
 # Save an object to a file
 # saveRDS(con, "conos_object.rds")
