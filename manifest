@@ -1,7 +1,7 @@
 #Conos.Preprocess
 #Wed Oct 23 18:50:29 UTC 2019
 JVMLevel=
-LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:94\:0.9
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:0.1
 author=Edwin F. Juarez & Anthony Castanza;UCSD -- Mesirov Lab
 categories=Clustering;SingleCell
 
