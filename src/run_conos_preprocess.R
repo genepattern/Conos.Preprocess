@@ -5,6 +5,7 @@ library("Matrix")
 library("dplyr")
 library("pagoda2")
 library("conos")
+library("tools")
 print("Loaded libraries: optparse, Matrix, dplyr, pagoda2, conos")
 print('==========================================================')
 
@@ -70,64 +71,91 @@ lines = readLines(con)
 
 panel = list(NA)
 i = 1
-for (line in lines){
-  print("About to read")
-  print(line)
-  name = tail(strsplit(line,'/')[[1]],1)
-  print(c('Using',name, 'as the name of the column'))
-  readTable = read.table(line, sep='\t',header=TRUE,)
+for (line in lines) {
+ print("About to read")
+ print(line)
+ if (file_ext(line) == "rds") {
+  RDSinput = readRDS(line)
+  name = tail(strsplit(line, "/")[[1]], 1)
+  print(paste0("Using ", name, " as the name of the column"))
+  panel[[i]] = RDSinput
+  names(panel)[[i]] = as.character(name)
+  i = i + 1
+ } else {
+  name = tail(strsplit(line, "/")[[1]], 1)
+  print(paste0("Using ", name, " as the name of the column"))
+  readTable = read.table(line, sep = "\t", header = TRUE, )
 
-  # readTable = readTable[1:500,1:501]
-  # write.table(readTable, file = paste("small_500x500",name,sep='_'), sep = "\t",row.names = F, quote=F)
+  # readTable = readTable[1:500,1:501] write.table(readTable, file =
+  # paste('small_500x500',name,sep='_'), sep = '\t',row.names = F, quote=F)
 
   row.names(readTable) <- readTable$symbol
   readTable[1] <- NULL
 
-  #print(readTable[1:6,1:6])
+  # print(readTable[1:6,1:6])
 
-  panel[[i]] = as(as.matrix(readTable),"dgCMatrix")
+  panel[[i]] = as(as.matrix(readTable), "dgCMatrix")
   names(panel)[[i]] = as.character(name)
-  i = i+1
+  i = i + 1
+ }
 }
-print('finished with the panel')
-print(str(panel,1))
-print(head(colnames(panel[[1]])))
-print(any(duplicated(unlist(lapply(panel,colnames)))))
+print("finished with the panel")
+print(str(panel, 1))
 
-print("About to save figures.")
-panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene=1, k=setk, perplexity=setperplexity , n.odgenes=setodgenes, get.largevis=FALSE, make.geneknn=FALSE)
-con <- Conos$new(panel.preprocessed, n.cores=1) # n.cores=1 is just so TNSE is reproducible. This is okay for smaller datastets, I have not tested it on larger ones.
+classes <- rep(NA, length(panel))
+for (i in seq_len(length(panel))) {
+ classes[i] <- class(panel[[i]])
+}
+
+if (all(classes == "dgCMatrix")) {
+ print(head(colnames(panel[[1]])))
+ print(any(duplicated(unlist(lapply(panel, colnames)))))
+ print("About to save figures.")
+ panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene = 1, k = setk, 
+  perplexity = setperplexity, n.odgenes = setodgenes, get.largevis = FALSE, 
+  make.geneknn = FALSE)
+} else if (all(classes == "Seurat")) {
+ panel.preprocessed <- lapply(panel, basicSeuratProc)
+} else {
+ stop(paste0("Mixed type datasets are not currently supported. Data types reported as: ", 
+  paste0(unique(classes), collapse = ", ")))
+}
+
+con <- Conos$new(panel.preprocessed, n.cores = 1)  # n.cores=1 is just so TNSE is reproducible. This is okay for smaller datastets, I have not tested it on larger ones.
 panel <- NULL
 gc()
-png("Sample_Independent_Clusters.png", width=16, height=9, units = 'in', res=300)
+png("Sample_Independent_Clusters.png", width = 16, height = 9, units = "in", res = 300)
 # plot(x, y) # Make plot
 
 # print(con)
-print(con$plotPanel(clustering="multilevel", use.local.clusters=T, title.size=4))
+print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4))
 dev.off()
 print("Done saving figures.")
 
 panel.preprocessed <- NULL
 gc()
 
-con$buildGraph(k=15, k.self=5, space=con_space, ncomps=con_comps, n.odgenes=con_odgenes, matching.method='mNN', metric='angular', score.component.variance = TRUE, verbose = TRUE)
+con$buildGraph(k = 15, k.self = 5, space = con_space, ncomps = con_comps, n.odgenes = con_odgenes, 
+ matching.method = "mNN", metric = "angular", score.component.variance = TRUE, 
+ verbose = TRUE)
 print(paste("Finished Projections:", Sys.time()))
 
 ## Write a table of Cell to Sample Relationships useful for later
-write.table(con$getDatasetPerCell(), file = "Cell_to_Sample_Memberships.txt", sep="\t", quote= FALSE, col.names = FALSE)
+write.table(con$getDatasetPerCell(), file = "Cell_to_Sample_Memberships.txt", sep = "\t", 
+ quote = FALSE, col.names = FALSE)
 
 print("About to save figures.")
 ## Capture CPCA communities variance
-png("CPCA_Variance.png", width=16, height=9, units = 'in', res=300)
-print(plotComponentVariance(con, space=con_space))
+png("CPCA_Variance.png", width = 16, height = 9, units = "in", res = 300)
+print(plotComponentVariance(con, space = con_space))
 print("Done saving figures.")
 
 
 # Save an object to a file
-saveRDS(list(con=con,con_space=con_space), "conos_preprocess_output.rds")
-print('saved conos_preprocess_output.rds')
+saveRDS(list(con = con, con_space = con_space), "conos_preprocess_output.rds")
+print("saved conos_preprocess_output.rds")
 
-# # Restore the object
-# readRDS(file = "conos_object.rds") # reads in a varaible called 'con'
+# # Restore the object readRDS(file = 'conos_preprocess_output.rds') # reads in a varaible
+# called 'con'
 
-print('Done!')
+print("Done!")
