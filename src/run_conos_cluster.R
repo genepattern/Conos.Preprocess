@@ -72,7 +72,7 @@ uspread <- args$umap_spread
 #===
 
 print(paste("Begin UMAP Embedding:", Sys.time()))
-con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=3) # n.cores=1 led to some incredibly slow times on sample data locally.
+con$embedGraph(method="UMAP", min.dist=udist, spread=uspread)
 print(paste("Finished UMAP Embedding:", Sys.time()))
 
 
