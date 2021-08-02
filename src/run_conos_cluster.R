@@ -66,11 +66,15 @@ if(args$runwalktrap=='True'){
   stepnum <- FALSE
 }
 
-umap_distance <- args$umap_distance
-umap_spread <- args$umap_spread
-
+udist <- args$umap_distance
+uspread <- args$umap_spread
 
 #===
+
+print(paste("Begin UMAP Embedding:", Sys.time()))
+con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=3) # n.cores=1 led to some incredibly slow times on sample data locally.
+print(paste("Finished UMAP Embedding:", Sys.time()))
+
 
 if(runleiden){
 print(paste("Finding Leiden Communities:", Sys.time()))
@@ -120,13 +124,6 @@ capture.output(walktrap.de, file = "harmonized_cluster_markers_walktrap.txt")
 ##===============================================================
 ##===============================================================
 "Plot gene expression on the joint graph"
-
-udist <- umap_distance
-uspread <- umap_spread
-
-print(paste("Begin UMAP Embedding:", Sys.time()))
-con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=3) # n.cores=1 led to some incredibly slow times on sample data locally.
-print(paste("Finished UMAP Embedding:", Sys.time()))
 
 print("About to save figures.")
 if(runleiden == TRUE){

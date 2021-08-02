@@ -38,6 +38,8 @@ RUN R -e 'BiocManager::install(c("AnnotationDbi", "BiocGenerics", "GO.db", "pcaM
 
 RUN R -e "install.packages('Seurat',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
+RUN R -e "install.packages('entropy',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+
 RUN R -e "install.packages('p2data',dependencies=TRUE, repos='https://kharchenkolab.github.io/drat/', type='source')"
 
 RUN R -e "install.packages('pagoda2',dependencies=TRUE, repos='http://cran.rstudio.com/')"
