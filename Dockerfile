@@ -30,7 +30,7 @@ RUN apt-get update --yes && apt-get install --no-install-recommends --yes \
   libhdf5-dev \
   time
 
-RUN R -e 'chooseCRANmirror(ind=52); install.packages("BiocManager")'
+RUN R -e 'chooseCRANmirror(ind=1); install.packages("BiocManager")'
 
 RUN R -e 'install.packages("optparse",repos = "http://cran.us.r-project.org")'
 
