@@ -153,7 +153,7 @@ write.table(con$getDatasetPerCell(), file = "Cell_to_Sample_Memberships.txt", se
 
 print("About to save figures.")
 ## Capture CPCA communities variance
-png("CPCA_Variance.png", width = 16, height = 9, units = "in", res = 300)
+png(paste0(con_space, "_Variance.png"), width = 16, height = 9, units = "in", res = 300)
 print(plotComponentVariance(con, space = con_space))
 print("Done saving figures.")
 
