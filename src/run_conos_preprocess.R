@@ -135,7 +135,7 @@ if (mode == "matrix") {
 print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4)) }
 if (mode == "seurat") {
 print(con$plotPanel(embedding = "umap", use.local.clusters = T, title.size = 4)) }
-}
+
 dev.off()
 print("Done saving figures.")
 
