@@ -77,6 +77,7 @@ for (line in lines) {
  if (file_ext(line) == "rds") {
   RDSinput = readRDS(line)
   name = tail(strsplit(line, "/")[[1]], 1)
+  name <- gsub("\\.rds$", "", name)
   print(paste0("Using ", name, " as the name of the column"))
   panel[[i]] = RDSinput
   names(panel)[[i]] = as.character(name)
