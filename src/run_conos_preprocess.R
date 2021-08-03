@@ -114,8 +114,10 @@ if (all(classes == "dgCMatrix")) {
  panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene = 1, k = setk, 
   perplexity = setperplexity, n.odgenes = setodgenes, get.largevis = FALSE, 
   make.geneknn = FALSE)
+  mode <- "matrix"
 } else if (all(classes == "Seurat")) {
- panel.preprocessed <- lapply(panel, basicSeuratProc)
+ panel.preprocessed <- panel
+ mode <- "seurat"
 } else {
  stop(paste0("Mixed type datasets are not currently supported. Data types reported as: ", 
   paste0(unique(classes), collapse = ", ")))
@@ -128,7 +130,11 @@ png("Sample_Independent_Clusters.png", width = 16, height = 9, units = "in", res
 # plot(x, y) # Make plot
 
 # print(con)
-print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4))
+if (mode == "matrix") {
+print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4)) }
+if (mode == "seurat") {
+print(con$plotPanel(embedding = "umap", use.local.clusters = T, title.size = 4)) }
+}
 dev.off()
 print("Done saving figures.")
 
@@ -152,7 +158,7 @@ print("Done saving figures.")
 
 
 # Save an object to a file
-saveRDS(list(con = con, con_space = con_space), "conos_preprocess_output.rds")
+saveRDS(list(con = con, con_space = con_space, mode = mode), "conos_preprocess_output.rds")
 print("saved conos_preprocess_output.rds")
 
 # # Restore the object readRDS(file = 'conos_preprocess_output.rds') # reads in a varaible
