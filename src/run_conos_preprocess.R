@@ -115,10 +115,27 @@ if (all(classes == "dgCMatrix")) {
  panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene = 1, k = setk, 
   perplexity = setperplexity, n.odgenes = setodgenes, get.largevis = FALSE, 
   make.geneknn = FALSE)
-  mode <- "matrix"
+ mode <- "matrix"
 } else if (all(classes == "Seurat")) {
  panel.preprocessed <- panel
  mode <- "seurat"
+ # Check for which dimensionality reduction embeddings exist in the objects
+ tsne_embeddings <- rep(NA, length(panel.preprocessed))
+ for (i in seq_len(length(panel))) {
+  tsne_embeddings[i] <- !is.null(panel.preprocessed[[i]]@reductions$tsne)
+ }
+ tsne_embeddings <- all(tsne_embeddings == TRUE)
+
+ umap_embeddings <- rep(NA, length(panel.preprocessed))
+ for (i in seq_len(length(panel))) {
+  umap_embeddings[i] <- !is.null(panel.preprocessed[[i]]@reductions$umap)
+ }
+ umap_embeddings <- all(umap_embeddings == TRUE)
+
+ if (tsne_embeddings == FALSE && umap_embeddings == FALSE) {
+  stop(paste0("No valid common dimensionality reduction was detected in the supplied seurat objects. Please run Seurat.Clustering with the same dimensionality reduction parameters."))
+ }
+
 } else {
  stop(paste0("Mixed type datasets are not currently supported. Data types reported as: ", 
   paste0(unique(classes), collapse = ", ")))
@@ -127,16 +144,29 @@ if (all(classes == "dgCMatrix")) {
 con <- Conos$new(panel.preprocessed, n.cores = 1)  # n.cores=1 is just so TNSE is reproducible. This is okay for smaller datastets, I have not tested it on larger ones.
 panel <- NULL
 gc()
-png("Sample_Independent_Clusters.png", width = 16, height = 9, units = "in", res = 300)
-# plot(x, y) # Make plot
-
 # print(con)
 if (mode == "matrix") {
-print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4)) }
+ png("Sample_Independent_Clusters.png", width = 16, height = 9, units = "in", 
+  res = 300)
+ # plot(x, y) # Make plot
+ print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4))
+ dev.off()
+}
 if (mode == "seurat") {
-print(con$plotPanel(embedding = "umap", use.local.clusters = T, title.size = 4)) }
+ if (umap_embeddings == TRUE) {
+  png("Sample_Independent_Clusters_UMAP.png", width = 16, height = 9, units = "in", 
+   res = 300)
+  print(con$plotPanel(embedding = "umap", use.local.clusters = T, title.size = 4))
+  dev.off()
+ }
+ if (tsne_embeddings == TRUE) {
+  png("Sample_Independent_Clusters_tSNE.png", width = 16, height = 9, units = "in", 
+   res = 300)
+  print(con$plotPanel(embedding = "tsne", use.local.clusters = T, title.size = 4))
+  dev.off()
+ }
+}
 
-dev.off()
 print("Done saving figures.")
 
 panel.preprocessed <- NULL
@@ -162,7 +192,7 @@ print("Done saving figures.")
 saveRDS(list(con = con, con_space = con_space, mode = mode), "conos_preprocess_output.rds")
 print("saved conos_preprocess_output.rds")
 
-# # Restore the object readRDS(file = 'conos_preprocess_output.rds') # reads in a varaible
-# called 'con'
+# # Restore the object readRDS(file = 'conos_preprocess_output.rds') # reads in a
+# varaible called 'con'
 
 print("Done!")

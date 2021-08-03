@@ -49,6 +49,7 @@ print('==========================================================')
 conos_object <- readRDS(file = args$conos_object) # reads in a varaible called 'conos_object'
 con <- conos_object$con
 con_space <- conos_object$con_space
+mode <- conos_object$mode
 
 if(args$runleiden=='True'){
   runleiden = TRUE
@@ -80,12 +81,42 @@ if(runleiden){
 print(paste("Finding Leiden Communities:", Sys.time()))
 con$findCommunities(method=leiden.community, resolution=resol)
 
+if(mode == "matrix") {
+
 ## Capture per-sample global leiden communities
 png(paste0("Per-sample_Global_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
 print(con$plotPanel(font.size=4, clustering='leiden'))
 dev.off()
 
-## Capture CPCA space embedded global leiden communities
+}
+
+if (mode = "seurat") {
+ # Check for which dimensionality reduction embeddings exist in the objects
+ tsne_embeddings <- rep(NA, length(con$samples))
+ for (i in seq_len(length(con$samples))) {
+  tsne_embeddings[i] <- !is.null(con$samples[[i]]@reductions$tsne)
+ }
+ tsne_embeddings <- all(tsne_embeddings == TRUE)
+
+ umap_embeddings <- rep(NA, length(con$samples))
+ for (i in seq_len(length(con$samples))) {
+  umap_embeddings[i] <- !is.null(con$samples[[i]]@reductions$umap)
+ }
+ umap_embeddings <- all(umap_embeddings == TRUE)
+
+if (tsne_embeddings == TRUE) {
+png(paste0("Per-sample_Global_Leiden",resol,"_Clusters_tSNSE.png"), width=16, height=9, units = 'in', res=300)
+print(con$plotPanel(font.size=4, clustering='leiden', embedding = "tsne"))
+dev.off()
+}
+if (umap_embeddings == TRUE) {
+png(paste0("Per-sample_Global_Leiden",resol,"_Clusters_umap.png"), width=16, height=9, units = 'in', res=300)
+print(con$plotPanel(font.size=4, clustering='leiden', embedding = "umap"))
+dev.off()
+}
+}
+
+## Capture (C)PCA space embedded global leiden communities
 png(paste0("DefaultVIS_",con_space,"_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
 print(cowplot::plot_grid(
 con$plotGraph(alpha=0.1, clustering='leiden'),
@@ -129,28 +160,28 @@ print("About to save figures.")
 if(runleiden == TRUE){
 ## Capture per-sample global leiden communities in UMAP space
 png("UMAP_per-sample_Global_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden'))
+print(con$plotPanel(font.size=4, clustering='leiden', embedding = "umap"))
 dev.off()
 
 ## Capture CPCA space embedded global leiden communities UMAP visualization
 png("UMAP_space_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
 print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
+con$plotGraph(alpha=0.1, clustering='leiden', embedding = "umap"),
+con$plotGraph(alpha=0.1, color.by='sample', embedding = "umap", mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
 dev.off()
 }
 
 if(runwalktrap == TRUE){
 ## Capture per-sample global walktrap communities in UMAP space
 png("UMAP_per-sample_Global_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='walktrap'))
+print(con$plotPanel(font.size=4, clustering='walktrap', embedding = "umap"))
 dev.off()
 
 ## Capture CPCA space embedded global Walktrap communities UMAP visualization
 png("UMAP_space_Walktrap_Clusters.png", width=16, height=9, units = 'in', res=300)
 print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='walktrap'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
+con$plotGraph(alpha=0.1, clustering='walktrap', embedding = "umap"),
+con$plotGraph(alpha=0.1, color.by='sample', embedding = "umap", mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
 dev.off()
 }
 
@@ -158,9 +189,9 @@ if(runleiden == TRUE & runwalktrap == TRUE){
 ## Capture comparison of Walktrap and Leiden clusters in UMAP Space
 png("Leiden_vs_Walktrap_Clusters.png", width=16, height=9, units = 'in', res=300)
 print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, clustering='walktrap'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
+con$plotGraph(alpha=0.1, clustering='leiden', embedding = "umap"),
+con$plotGraph(alpha=0.1, clustering='walktrap', embedding = "umap"),
+con$plotGraph(alpha=0.1, color.by='sample', embedding = "umap", mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
 dev.off()
 }
 
