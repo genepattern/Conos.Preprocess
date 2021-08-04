@@ -77,59 +77,65 @@ con$embedGraph(method="UMAP", min.dist=udist, spread=uspread)
 print(paste("Finished UMAP Embedding:", Sys.time()))
 
 
-if(runleiden){
-print(paste("Finding Leiden Communities:", Sys.time()))
-con$findCommunities(method=leiden.community, resolution=resol)
+if (runleiden) {
+ print(paste("Finding Leiden Communities:", Sys.time()))
+ con$findCommunities(method = leiden.community, resolution = resol)
 
-if(mode == "matrix") {
+ if (mode == "matrix") {
 
-## Capture per-sample global leiden communities
-png(paste0("Per-sample_Global_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden'))
-dev.off()
+  ## Capture per-sample global leiden communities
+  png(paste0("Per-sample_Global_Leiden", resol, "_Clusters.png"), width = 16, 
+   height = 9, units = "in", res = 300)
+  print(con$plotPanel(font.size = 4, clustering = "leiden"))
+  dev.off()
 
-}
-
-if (mode = "seurat") {
- # Check for which dimensionality reduction embeddings exist in the objects
- tsne_embeddings <- rep(NA, length(con$samples))
- for (i in seq_len(length(con$samples))) {
-  tsne_embeddings[i] <- !is.null(con$samples[[i]]@reductions$tsne)
  }
- tsne_embeddings <- all(tsne_embeddings == TRUE)
 
- umap_embeddings <- rep(NA, length(con$samples))
- for (i in seq_len(length(con$samples))) {
-  umap_embeddings[i] <- !is.null(con$samples[[i]]@reductions$umap)
+ if (mode == "seurat") {
+  # Check for which dimensionality reduction embeddings exist in the objects
+  tsne_embeddings <- rep(NA, length(con$samples))
+  for (i in seq_len(length(con$samples))) {
+   tsne_embeddings[i] <- !is.null(con$samples[[i]]@reductions$tsne)
+  }
+  tsne_embeddings <- all(tsne_embeddings == TRUE)
+
+  umap_embeddings <- rep(NA, length(con$samples))
+  for (i in seq_len(length(con$samples))) {
+   umap_embeddings[i] <- !is.null(con$samples[[i]]@reductions$umap)
+  }
+  umap_embeddings <- all(umap_embeddings == TRUE)
+
+  if (tsne_embeddings == TRUE) {
+   png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_tSNSE.png"), 
+    width = 16, height = 9, units = "in", res = 300)
+   print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = "tsne"))
+   dev.off()
+  }
+  if (umap_embeddings == TRUE) {
+   png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_umap.png"), 
+    width = 16, height = 9, units = "in", res = 300)
+   print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = "umap"))
+   dev.off()
+  }
  }
- umap_embeddings <- all(umap_embeddings == TRUE)
 
-if (tsne_embeddings == TRUE) {
-png(paste0("Per-sample_Global_Leiden",resol,"_Clusters_tSNSE.png"), width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden', embedding = "tsne"))
-dev.off()
-}
-if (umap_embeddings == TRUE) {
-png(paste0("Per-sample_Global_Leiden",resol,"_Clusters_umap.png"), width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden', embedding = "umap"))
-dev.off()
-}
-}
+ ## Capture (C)PCA space embedded global leiden communities
+ png(paste0("DefaultVIS_", con_space, "_Leiden", resol, "_Clusters.png"), width = 16, 
+  height = 9, units = "in", res = 300)
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden"), con$plotGraph(alpha = 0.1, 
+  color.by = "sample", mark.groups = F, show.legend = T, legend.position = "bottom", 
+  legend.title = "")))
+ dev.off()
 
-## Capture (C)PCA space embedded global leiden communities
-png(paste0("DefaultVIS_",con_space,"_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
-print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
-dev.off()
+ ## Capture Leiden community composition
+ png(paste0("Leiden", resol, "_Cluster_Composition.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+ print(plotClusterBarplots(con, clustering = "leiden", legend.height = 0.2))
+ dev.off()
 
-## Capture Leiden community composition
-png(paste0("Leiden",resol,"_Cluster_Composition.png"), width=16, height=9, units = 'in', res=300)
-print(plotClusterBarplots(con, clustering='leiden', legend.height = 0.2))
-dev.off()
-
-leiden.de <- con$getDifferentialGenes(clustering='leiden')
-capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden",resol,".txt"))
+ leiden.de <- con$getDifferentialGenes(clustering = "leiden")
+ capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden", 
+  resol, ".txt"))
 }
 
 #===
