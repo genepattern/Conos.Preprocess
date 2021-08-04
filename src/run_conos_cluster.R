@@ -219,7 +219,7 @@ print("Done saving figures.")
 # Return runleiden, runwalktrap
 
 # Save an object to a file
-saveRDS(list(con = con, runleiden = runleiden, runwalktrap = runwalktrap), "conos_cluster_output.rds")
+saveRDS(list(con = con, runleiden = runleiden, runwalktrap = runwalktrap, mode = mode), "conos_cluster_output.rds")
 print("saved conos_cluster_output.rds")
 
 # Save an object to a file saveRDS(con, 'conos_object.rds') print('saved
