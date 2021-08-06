@@ -146,7 +146,7 @@ panel <- NULL
 gc()
 # print(con)
 if (mode == "matrix") {
- png("Sample_Independent_Clusters.png", width = 16, height = 9, units = "in", 
+ png("Sample_Independent_Clusters_tSNE.png", width = 16, height = 9, units = "in", 
   res = 300)
  # plot(x, y) # Make plot
  print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4))
