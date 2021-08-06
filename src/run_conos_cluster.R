@@ -85,12 +85,6 @@ if (runleiden) {
  if (mode == "matrix") {
   persample_emb = NULL
   emb_space = "tSNE"
-  ## Capture per-sample global leiden communities
-  png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_", emb_space, ".png"), 
-   width = 16, height = 9, units = "in", res = 300)
-  print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = persample_emb))
-  dev.off()
-
  }
 
  if (mode == "seurat") {
@@ -181,9 +175,14 @@ print("saved conos_cluster_output.rds")
 print("About to save figures.")
 if (runleiden == TRUE) {
  ## Capture per-sample global leiden communities in UMAP space
- png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_", emb_space, ".png"), 
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Individual_", emb_space, ".png"), 
   width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = persample_emb))
+ dev.off()
+
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Common_UMAP.png"), 
+  width = 16, height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "leiden", use.common.embedding=TRUE))
  dev.off()
 
  ## Capture CPCA space embedded global leiden communities UMAP visualization
@@ -197,9 +196,14 @@ if (runleiden == TRUE) {
 
 if (runwalktrap == TRUE) {
  ## Capture per-sample global walktrap communities in UMAP space
- png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_", emb_space, ".png"), 
+ png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Individual_", emb_space, ".png"), 
   width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "walktrap", embedding = persample_emb))
+ dev.off()
+
+ png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Common_UMAP.png"), 
+  width = 16, height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "walktrap", use.common.embedding=TRUE))
  dev.off()
 
  ## Capture CPCA space embedded global Walktrap communities UMAP visualization
