@@ -210,7 +210,7 @@ if (runwalktrap == TRUE) {
  png(paste0("Walktrap", stepnum, "_Clusters_UMAP.png"), width = 16, height = 9, 
   units = "in", res = 300)
  print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "walktrap", 
-  embedding = "umap"), con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "umap", 
+  embedding = "UMAP"), con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "UMAP", 
   mark.groups = F, show.legend = T, legend.position = "bottom", legend.title = "")))
  dev.off()
 }
@@ -219,9 +219,9 @@ if (runleiden == TRUE & runwalktrap == TRUE) {
  ## Capture comparison of Walktrap and Leiden clusters in UMAP Space
  png(paste0("Leiden", resol, "_vs_Walktrap", stepnum, "_Clusters_UMAP.png"), width = 16, 
   height = 9, units = "in", res = 300)
- print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden", embedding = "umap"), 
-  con$plotGraph(alpha = 0.1, clustering = "walktrap", embedding = "umap"), 
-  con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "umap", mark.groups = F, 
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden", embedding = "UMAP"), 
+  con$plotGraph(alpha = 0.1, clustering = "walktrap", embedding = "UMAP"), 
+  con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "UMAP", mark.groups = F, 
    show.legend = T, legend.position = "bottom", legend.title = "")))
  dev.off()
 }
