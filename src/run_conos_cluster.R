@@ -126,7 +126,7 @@ if (runleiden) {
  dev.off()
 
  if (mode == "matrix") {
-  leiden.de <- con$getDifferentialGenes(clustering = "leiden")
+  leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE)
   capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden", 
    resol, ".txt"))
  } else {
@@ -150,7 +150,7 @@ if (runwalktrap) {
  print("Done saving figures.")
 
  if (mode == "matrix") {
-  walktrap.de <- con$getDifferentialGenes(clustering = "walktrap")
+  walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE)
   capture.output(walktrap.de, file = paste0("harmonized_cluster_markers", stepnum, 
    "_walktrap.txt"))
  } else {
