@@ -127,8 +127,8 @@ if (runleiden) {
 
  if (mode == "matrix") {
   leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE)
-  capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden", 
-   resol, ".txt"))
+  capture.output(leiden.de, file = paste0("Leiden", 
+   resol, "_Cluster_Differential_Genes.txt"))
   png(paste0("Leiden", resol, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
   units = "in", res = 300)
   print(plotDEheatmap(con,as.factor(clustering = "leiden"),leiden.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
@@ -155,8 +155,8 @@ if (runwalktrap) {
 
  if (mode == "matrix") {
   walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE)
-  capture.output(walktrap.de, file = paste0("harmonized_cluster_markers", stepnum, 
-   "_walktrap.txt"))
+  capture.output(walktrap.de, file = paste0("Walktrap", stepnum, 
+   "_Cluster_Differential_Genes.txt"))
   png(paste0("Walktrap", stepnum, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
   units = "in", res = 300)
   print(plotDEheatmap(con,as.factor(clustering = "walktrap"),walktrap.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
