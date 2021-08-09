@@ -127,11 +127,12 @@ if (runleiden) {
 
  if (mode == "matrix") {
   leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE)
-  capture.output(leiden.de, file = paste0("Leiden", 
-   resol, "_Cluster_Differential_Genes.txt"))
+  capture.output(leiden.de, file = paste0("Leiden", resol, "_Cluster_Differential_Genes.txt"))
   png(paste0("Leiden", resol, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
-  units = "in", res = 300)
-  print(plotDEheatmap(con, levels(con$clusters$leiden$result$membership), leiden.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
+   units = "in", res = 300)
+  print(plotDEheatmap(con, as.factor(con$clusters$leiden$result$membership), 
+   leiden.de, n.genes.per.cluster = 5, column.metadata = list(samples = con$getDatasetPerCell()), 
+   row.label.font.size = 7))
   dev.off()
  } else {
   print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
@@ -154,13 +155,14 @@ if (runwalktrap) {
  print("Done saving figures.")
 
  if (mode == "matrix") {
-  walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE)
-  capture.output(walktrap.de, file = paste0("Walktrap", stepnum, 
-   "_Cluster_Differential_Genes.txt"))
-  png(paste0("Walktrap", stepnum, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
-  units = "in", res = 300)
-  print(plotDEheatmap(con, levels(con$clusters$walktrap$groups), walktrap.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
-  dev.off()
+  walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE, 
+   groups = con$clusters$walktrap$result$membership)
+  capture.output(walktrap.de, file = paste0("Walktrap", stepnum, "_Cluster_Differential_Genes.txt"))
+  # png(paste0("Walktrap", stepnum, "_Cluster_Top5DE_Heatmap.png"), width = 16, 
+  #  height = 9, units = "in", res = 300)
+  # print(plotDEheatmap(con, names(walktrap.de), walktrap.de, n.genes.per.cluster = 5, 
+  #  column.metadata = list(samples = con$getDatasetPerCell()), row.label.font.size = 7))
+  # dev.off()
  } else {
   print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
  }
@@ -183,14 +185,14 @@ print("saved conos_cluster_output.rds")
 print("About to save figures.")
 if (runleiden == TRUE) {
  ## Capture per-sample global leiden communities in UMAP space
- png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Individual_", emb_space, ".png"), 
-  width = 16, height = 9, units = "in", res = 300)
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Individual_", emb_space, 
+  ".png"), width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = persample_emb))
  dev.off()
 
- png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Common_UMAP.png"), 
-  width = 16, height = 9, units = "in", res = 300)
- print(con$plotPanel(font.size = 4, clustering = "leiden", use.common.embedding=TRUE))
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Common_UMAP.png"), width = 16, 
+  height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "leiden", use.common.embedding = TRUE))
  dev.off()
 
  ## Capture CPCA space embedded global leiden communities UMAP visualization
@@ -204,14 +206,14 @@ if (runleiden == TRUE) {
 
 if (runwalktrap == TRUE) {
  ## Capture per-sample global walktrap communities in UMAP space
- png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Individual_", emb_space, ".png"), 
-  width = 16, height = 9, units = "in", res = 300)
+ png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Individual_", emb_space, 
+  ".png"), width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "walktrap", embedding = persample_emb))
  dev.off()
 
  png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Common_UMAP.png"), 
   width = 16, height = 9, units = "in", res = 300)
- print(con$plotPanel(font.size = 4, clustering = "walktrap", use.common.embedding=TRUE))
+ print(con$plotPanel(font.size = 4, clustering = "walktrap", use.common.embedding = TRUE))
  dev.off()
 
  ## Capture CPCA space embedded global Walktrap communities UMAP visualization
