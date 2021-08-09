@@ -129,6 +129,10 @@ if (runleiden) {
   leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE)
   capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden", 
    resol, ".txt"))
+  png(paste0("Leiden", resol, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+  print(plotDEheatmap(con,as.factor(clustering = "leiden"),leiden.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
+  dev.off()
  } else {
   print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
  }
@@ -153,6 +157,10 @@ if (runwalktrap) {
   walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE)
   capture.output(walktrap.de, file = paste0("harmonized_cluster_markers", stepnum, 
    "_walktrap.txt"))
+  png(paste0("Walktrap", stepnum, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+  print(plotDEheatmap(con,as.factor(clustering = "walktrap"),walktrap.de, n.genes.per.cluster = 5, column.metadata=list(samples=con$getDatasetPerCell()), row.label.font.size = 7))
+  dev.off()
  } else {
   print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
  }
