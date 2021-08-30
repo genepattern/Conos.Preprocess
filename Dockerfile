@@ -19,7 +19,6 @@ RUN apt-get update --yes && apt-get install --no-install-recommends --yes \
   libcairo2-dev \
   libxt-dev \
   libgtk2.0-dev \
-  libcairo2-dev \
   xvfb  \
   xauth \
   xfonts-base \

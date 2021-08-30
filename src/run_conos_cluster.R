@@ -74,7 +74,7 @@ uspread <- args$umap_spread
 # ===
 
 print(paste("Begin UMAP Embedding:", Sys.time()))
-con$embedGraph(method = "umap", min.dist = udist, spread = uspread)
+con$embedGraph(method = "UMAP", min.dist = udist, spread = uspread)
 print(paste("Finished UMAP Embedding:", Sys.time()))
 
 
