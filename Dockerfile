@@ -3,7 +3,7 @@ FROM rocker/tidyverse:4.0.5
 # Dockerfile adapted from kharchenkolab/conos/blob/master/docker/Dockerfile
 
 LABEL authors="Viktor Petukhov <viktor.s.petuhov@ya.ru>, Evan Biederstedt <evan.biederstedt@gmail.com>" \
-    version.image="1.4.2" \
+    version.image="1.4.3" \
     version.pagoda2="1.4.0" \
     description="tidyverse image R 4.0.5 to run pagoda2 with Rstudio"
 
@@ -44,7 +44,7 @@ RUN R -e "install.packages('conosPanel',dependencies=TRUE, repos='https://kharch
 
 RUN R -e 'devtools::install_github("kharchenkolab/leidenAlg")'
 
-RUN R -e 'devtools::install_github("kharchenkolab/conos", ref="dev")'
+RUN R -e 'devtools::install_github("kharchenkolab/conos@v1.4.3")'
 
 RUN mkdir /module
 RUN mkdir /job_1234
