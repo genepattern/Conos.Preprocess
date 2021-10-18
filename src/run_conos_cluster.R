@@ -7,6 +7,7 @@ library("pagoda2")
 library("conos")
 print("Loaded libraries: optparse, Matrix, dplyr, pagoda2, conos")
 print('==========================================================')
+options(ggrepel.max.overlaps = Inf)
 
 # # ====================================
 
@@ -46,137 +47,197 @@ print('==========================================================')
 # ====================================
 
 # Restore the object
-conos_object <- readRDS(file = args$conos_object) # reads in a varaible called 'conos_object'
+conos_object <- readRDS(file = args$conos_object)  # reads in a varaible called 'conos_object'
 con <- conos_object$con
 con_space <- conos_object$con_space
+mode <- conos_object$mode
 
-if(args$runleiden=='True'){
-  runleiden = TRUE
-  resol <- args$leiden_resolution
-}else{
-  runleiden = FALSE
-  resol <- FALSE
+if (args$runleiden == "True") {
+ runleiden = TRUE
+ resol <- args$leiden_resolution
+} else {
+ runleiden = FALSE
+ resol <- FALSE
 }
 
-if(args$runwalktrap=='True'){
-  runwalktrap = TRUE
-  stepnum <- args$walktrap_steps
-}else{
-  runwalktrap = FALSE
-  stepnum <- FALSE
+if (args$runwalktrap == "True") {
+ runwalktrap = TRUE
+ stepnum <- args$walktrap_steps
+} else {
+ runwalktrap = FALSE
+ stepnum <- FALSE
 }
 
-umap_distance <- args$umap_distance
-umap_spread <- args$umap_spread
+udist <- args$umap_distance
+uspread <- args$umap_spread
 
-
-#===
-
-if(runleiden){
-print(paste("Finding Leiden Communities:", Sys.time()))
-con$findCommunities(method=leiden.community, resolution=resol)
-
-## Capture per-sample global leiden communities
-png(paste0("Per-sample_Global_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden'))
-dev.off()
-
-## Capture CPCA space embedded global leiden communities
-png(paste0("DefaultVIS_",con_space,"_Leiden",resol,"_Clusters.png"), width=16, height=9, units = 'in', res=300)
-print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
-dev.off()
-
-## Capture Leiden community composition
-png(paste0("Leiden",resol,"_Cluster_Composition.png"), width=16, height=9, units = 'in', res=300)
-print(plotClusterBarplots(con, clustering='leiden', legend.height = 0.2))
-dev.off()
-
-leiden.de <- con$getDifferentialGenes(clustering='leiden')
-capture.output(leiden.de, file = paste0("harmonized_cluster_markers_leiden",resol,".txt"))
-}
-
-#===
-
-if(runwalktrap){
-## Generate Walktrap clusters
-print(paste("Begin Walktrap:", Sys.time()))
-con$findCommunities(method = igraph::walktrap.community, steps=stepnum)
-print(paste("Finished Walktrap:", Sys.time()))
-
-print("About to save figures.")
-## Capture Walktrap community composition
-png("Walktrap_Cluster_Composition.png", width=16, height=9, units = 'in', res=300)
-print(plotClusterBarplots(con, clustering='walktrap', legend.height = 0.2))
-dev.off()
-print("Done saving figures.")
-
-walktrap.de <- con$getDifferentialGenes(clustering='walktrap')
-capture.output(walktrap.de, file = "harmonized_cluster_markers_walktrap.txt")
-}
-
-##===============================================================
-##===============================================================
-##===============================================================
-"Plot gene expression on the joint graph"
-
-udist <- umap_distance
-uspread <- umap_spread
+# ===
 
 print(paste("Begin UMAP Embedding:", Sys.time()))
-con$embedGraph(method="UMAP", min.dist=udist, spread=uspread, n.cores=3) # n.cores=1 led to some incredibly slow times on sample data locally.
+con$embedGraph(method = "UMAP", min.dist = udist, spread = uspread)
 print(paste("Finished UMAP Embedding:", Sys.time()))
 
+
+if (runleiden) {
+ print(paste("Finding Leiden Communities:", Sys.time()))
+ con$findCommunities(method = leiden.community, resolution = resol)
+
+ if (mode == "matrix") {
+  persample_emb = NULL
+  emb_space = "tSNE"
+ }
+
+ if (mode == "seurat") {
+  # Check for which dimensionality reduction embeddings exist in the objects
+  tsne_embeddings <- rep(NA, length(con$samples))
+  for (i in seq_len(length(con$samples))) {
+   tsne_embeddings[i] <- !is.null(con$samples[[i]]@reductions$tsne)
+  }
+  tsne_embeddings <- all(tsne_embeddings == TRUE)
+
+  umap_embeddings <- rep(NA, length(con$samples))
+  for (i in seq_len(length(con$samples))) {
+   umap_embeddings[i] <- !is.null(con$samples[[i]]@reductions$umap)
+  }
+  umap_embeddings <- all(umap_embeddings == TRUE)
+
+  if (tsne_embeddings == TRUE) {
+   persample_emb = "tsne"
+   emb_space = "tSNE"
+  }
+  if (umap_embeddings == TRUE) {
+   persample_emb = "umap"
+   emb_space = "UMAP"
+  }
+ }
+
+ ## Capture (C)PCA space embedded global leiden communities
+ png(paste0("DefaultVIS_", con_space, "_Leiden", resol, "_Clusters.png"), width = 16, 
+  height = 9, units = "in", res = 300)
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden"), con$plotGraph(alpha = 0.1, 
+  color.by = "sample", mark.groups = F, show.legend = T, legend.position = "bottom", 
+  legend.title = "")))
+ dev.off()
+
+ ## Capture Leiden community composition
+ png(paste0("Leiden", resol, "_Cluster_Composition.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+ print(plotClusterBarplots(con, clustering = "leiden", legend.height = 0.2))
+ dev.off()
+
+ if (mode == "matrix") {
+  leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE, 
+   groups = con$clusters$leiden$groups)
+  capture.output(leiden.de, file = paste0("Leiden", resol, "_Cluster_Differential_Genes.txt"))
+  png(paste0("Leiden", resol, "_Cluster_Top5DE_Heatmap.png"), width = 16, height = 9, 
+   units = "in", res = 300)
+  print(plotDEheatmap(con, as.factor(con$clusters$leiden$result$membership), 
+   leiden.de, n.genes.per.cluster = 5, column.metadata = list(samples = con$getDatasetPerCell()), 
+   row.label.font.size = 7))
+  dev.off()
+ } else {
+  print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
+ }
+}
+# ===
+
+if (runwalktrap) {
+ ## Generate Walktrap clusters
+ print(paste("Begin Walktrap:", Sys.time()))
+ con$findCommunities(method = igraph::walktrap.community, steps = stepnum)
+ print(paste("Finished Walktrap:", Sys.time()))
+
+ print("About to save figures.")
+ ## Capture Walktrap community composition
+ png(paste0("Walktrap", stepnum, "_Cluster_Composition.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+ print(plotClusterBarplots(con, clustering = "walktrap", legend.height = 0.2))
+ dev.off()
+ print("Done saving figures.")
+
+ if (mode == "matrix") {
+  walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE, 
+   groups = con$clusters$walktrap$groups)
+  capture.output(walktrap.de, file = paste0("Walktrap", stepnum, "_Cluster_Differential_Genes.txt"))
+  png(paste0("Walktrap", stepnum, "_Cluster_Top5DE_Heatmap.png"), width = 16, 
+   height = 9, units = "in", res = 300)
+  print(plotDEheatmap(con, as.factor(con$clusters$walktrap$groups), leiden.de, 
+   n.genes.per.cluster = 5, column.metadata = list(samples = con$getDatasetPerCell()), 
+   row.label.font.size = 7))
+  dev.off()
+ } else {
+  print(paste0("Harmonized cluster marker gene detection is not currently supported for Seurat objects. See: https://github.com/kharchenkolab/conos/issues/16 for details."))
+ }
+}
+
+## =============================================================== Return
+## runleiden, runwalktrap, and mode
+
+# Save an object to a file
+saveRDS(list(con = con, runleiden = runleiden, runwalktrap = runwalktrap, mode = mode), 
+ "conos_cluster_output.rds")
+print("saved conos_cluster_output.rds")
+
+# Save an object to a file saveRDS(con, 'conos_object.rds') print('saved
+# conos_object.rds')
+
+## ===============================================================
+"Plot gene expression on the joint graph"
+
 print("About to save figures.")
-if(runleiden == TRUE){
-## Capture per-sample global leiden communities in UMAP space
-png("UMAP_per-sample_Global_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='leiden'))
-dev.off()
+if (runleiden == TRUE) {
+ ## Capture per-sample global leiden communities in UMAP space
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Individual_", emb_space, 
+  ".png"), width = 16, height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "leiden", embedding = persample_emb))
+ dev.off()
 
-## Capture CPCA space embedded global leiden communities UMAP visualization
-png("UMAP_space_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
-dev.off()
+ png(paste0("Per-sample_Global_Leiden", resol, "_Clusters_Common_UMAP.png"), width = 16, 
+  height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "leiden", use.common.embedding = TRUE))
+ dev.off()
+
+ ## Capture CPCA space embedded global leiden communities UMAP visualization
+ png(paste0("Leiden", resol, "_Clusters_UMAP.png"), width = 16, height = 9, units = "in", 
+  res = 300)
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden", embedding = "UMAP"), 
+  con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "UMAP", mark.groups = F, 
+   show.legend = T, legend.position = "bottom", legend.title = "")))
+ dev.off()
 }
 
-if(runwalktrap == TRUE){
-## Capture per-sample global walktrap communities in UMAP space
-png("UMAP_per-sample_Global_Leiden_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(con$plotPanel(font.size=4, clustering='walktrap'))
-dev.off()
+if (runwalktrap == TRUE) {
+ ## Capture per-sample global walktrap communities in UMAP space
+ png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Individual_", emb_space, 
+  ".png"), width = 16, height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "walktrap", embedding = persample_emb))
+ dev.off()
 
-## Capture CPCA space embedded global Walktrap communities UMAP visualization
-png("UMAP_space_Walktrap_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='walktrap'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
-dev.off()
+ png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Common_UMAP.png"), 
+  width = 16, height = 9, units = "in", res = 300)
+ print(con$plotPanel(font.size = 4, clustering = "walktrap", use.common.embedding = TRUE))
+ dev.off()
+
+ ## Capture CPCA space embedded global Walktrap communities UMAP visualization
+ png(paste0("Walktrap", stepnum, "_Clusters_UMAP.png"), width = 16, height = 9, 
+  units = "in", res = 300)
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "walktrap", 
+  embedding = "UMAP"), con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "UMAP", 
+  mark.groups = F, show.legend = T, legend.position = "bottom", legend.title = "")))
+ dev.off()
 }
 
-if(runleiden == TRUE & runwalktrap == TRUE){
-## Capture comparison of Walktrap and Leiden clusters in UMAP Space
-png("Leiden_vs_Walktrap_Clusters.png", width=16, height=9, units = 'in', res=300)
-print(cowplot::plot_grid(
-con$plotGraph(alpha=0.1, clustering='leiden'),
-con$plotGraph(alpha=0.1, clustering='walktrap'),
-con$plotGraph(alpha=0.1, color.by='sample', mark.groups=F, show.legend=T, legend.position='bottom', legend.title = "")))
-dev.off()
+if (runleiden == TRUE & runwalktrap == TRUE) {
+ ## Capture comparison of Walktrap and Leiden clusters in UMAP Space
+ png(paste0("Leiden", resol, "_vs_Walktrap", stepnum, "_Clusters_UMAP.png"), width = 16, 
+  height = 9, units = "in", res = 300)
+ print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden", embedding = "UMAP"), 
+  con$plotGraph(alpha = 0.1, clustering = "walktrap", embedding = "UMAP"), 
+  con$plotGraph(alpha = 0.1, color.by = "sample", embedding = "UMAP", mark.groups = F, 
+   show.legend = T, legend.position = "bottom", legend.title = "")))
+ dev.off()
 }
 
 print("Done saving figures.")
 
-# Return runleiden, runwalktrap
-
-# Save an object to a file
-saveRDS(list(con=con,runleiden=runleiden,runwalktrap=runwalktrap), "conos_cluster_output.rds")
-print('saved conos_cluster_output.rds')
-
-# Save an object to a file
-# saveRDS(con, "conos_object.rds")
-# print('saved conos_object.rds')
-
-print('Done!')
+print("Done!")
