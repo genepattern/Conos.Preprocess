@@ -16,4 +16,4 @@ saveRDS(list(con=con,con_space=con_space), "conos_preprocess_output.rds")
 print('saved conos_preprocess_output.rds')
 ```
 ## Technical note:
-This module uses the Conos Docker container vpetukhov/conos:version-1.1.1
+This module uses the Conos Docker container vpetukhov/conos:version-1.1.1 wrapped in the container genepattern/conos:2.0
