@@ -12,8 +12,8 @@ More details in the original package: https://github.com/hms-dbmi/conos
 The module ends by saving some variables to file:
 ```
 # Save an object to a file
-saveRDS(list(con=con,con_space=con_space), "conos_object.rds")
-print('saved conos_object.rds')
+saveRDS(list(con=con,con_space=con_space), "conos_preprocess_output.rds")
+print('saved conos_preprocess_output.rds')
 ```
- ## Technical note:
- This module uses the Conos Docker container vpetukhov/conos:version-1.1.1
+## Technical note:
+This module uses the Conos Docker container vpetukhov/conos:version-1.1.1

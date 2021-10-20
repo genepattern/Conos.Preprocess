@@ -58,7 +58,7 @@ RUN mkdir /job_1234
 COPY src /module
 
 # build using this:
-# docker build -t genepattern/conos:1.2 .
+# docker build -t genepattern/conos:2.0 .
 
 # default command
 CMD ["Rscript", "--version"]

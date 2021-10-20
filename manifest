@@ -1,7 +1,7 @@
 #Conos.Preprocess
 #Wed Oct 23 18:50:29 UTC 2019
 JVMLevel=
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:0.1
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:2.0
 author=Edwin F. Juarez & Anthony Castanza;UCSD -- Mesirov Lab
 categories=Clustering;SingleCell
 
@@ -11,7 +11,7 @@ cpuType=any
 description=GenePattern Module which implements the preprocessing and PCA steps of Conos
 fileFormat=png;rds
 
-job.docker.image=genepattern/conos\:1.2
+job.docker.image=genepattern/conos\:2.0
 job.memory=4Gb
 
 language=R
@@ -116,9 +116,9 @@ p7_prefix_when_specified=
 p7_type=java.lang.String
 p7_value=
 
-privacy=private
-quality=development
+privacy=public
+quality=production
 taskDoc=doc.html
 taskType=Clustering
 userid=edjuaro
-version=Initial version
+version=Upgrades on Oct 2021
