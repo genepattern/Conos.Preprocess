@@ -115,10 +115,10 @@ if (all(classes == "dgCMatrix")) {
  panel.preprocessed <- lapply(panel, basicP2proc, min.cells.per.gene = 1, k = setk, 
   perplexity = setperplexity, n.odgenes = setodgenes, get.largevis = FALSE, 
   make.geneknn = FALSE)
- mode <- "matrix"
+ data_source <- "matrix"
 } else if (all(classes == "Seurat")) {
  panel.preprocessed <- panel
- mode <- "seurat"
+ data_source <- "seurat"
  # Check for which dimensionality reduction embeddings exist in the objects
  tsne_embeddings <- rep(NA, length(panel.preprocessed))
  for (i in seq_len(length(panel))) {
@@ -145,14 +145,14 @@ con <- Conos$new(panel.preprocessed, n.cores = 1)  # n.cores=1 is just so TNSE i
 panel <- NULL
 gc()
 # print(con)
-if (mode == "matrix") {
+if (data_source == "matrix") {
  png("Sample_Independent_Clusters_tSNE.png", width = 16, height = 9, units = "in", 
   res = 300)
  # plot(x, y) # Make plot
  print(con$plotPanel(clustering = "multilevel", use.local.clusters = T, title.size = 4))
  dev.off()
 }
-if (mode == "seurat") {
+if (data_source == "seurat") {
  if (umap_embeddings == TRUE) {
   png("Sample_Independent_Clusters_UMAP.png", width = 16, height = 9, units = "in", 
    res = 300)
@@ -189,7 +189,7 @@ print("Done saving figures.")
 
 
 # Save an object to a file
-saveRDS(list(con = con, con_space = con_space, mode = mode), "conos_preprocess_output.rds")
+saveRDS(list(con = con, con_space = con_space, data_source = data_source), "conos_preprocess_output.rds")
 print("saved conos_preprocess_output.rds")
 
 # # Restore the object readRDS(file = 'conos_preprocess_output.rds') # reads in a

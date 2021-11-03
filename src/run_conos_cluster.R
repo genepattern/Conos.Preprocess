@@ -50,7 +50,7 @@ print('==========================================================')
 conos_object <- readRDS(file = args$conos_object)  # reads in a varaible called 'conos_object'
 con <- conos_object$con
 con_space <- conos_object$con_space
-mode <- conos_object$mode
+data_source <- conos_object$data_source
 
 if (args$runleiden == "True") {
  runleiden = TRUE
@@ -82,12 +82,12 @@ if (runleiden) {
  print(paste("Finding Leiden Communities:", Sys.time()))
  con$findCommunities(method = leiden.community, resolution = resol)
 
- if (mode == "matrix") {
+ if (data_source == "matrix") {
   persample_emb = NULL
   emb_space = "tSNE"
  }
 
- if (mode == "seurat") {
+ if (data_source == "seurat") {
   # Check for which dimensionality reduction embeddings exist in the objects
   tsne_embeddings <- rep(NA, length(con$samples))
   for (i in seq_len(length(con$samples))) {
@@ -125,7 +125,7 @@ if (runleiden) {
  print(plotClusterBarplots(con, clustering = "leiden", legend.height = 0.2))
  dev.off()
 
- if (mode == "matrix") {
+ if (data_source == "matrix") {
   leiden.de <- con$getDifferentialGenes(clustering = "leiden", append.auc = TRUE, 
    groups = con$clusters$leiden$groups)
   capture.output(leiden.de, file = paste0("Leiden", resol, "_Cluster_Differential_Genes.txt"))
@@ -155,7 +155,7 @@ if (runwalktrap) {
  dev.off()
  print("Done saving figures.")
 
- if (mode == "matrix") {
+ if (data_source == "matrix") {
   walktrap.de <- con$getDifferentialGenes(clustering = "walktrap", append.auc = TRUE, 
    groups = con$clusters$walktrap$groups)
   capture.output(walktrap.de, file = paste0("Walktrap", stepnum, "_Cluster_Differential_Genes.txt"))
@@ -171,10 +171,10 @@ if (runwalktrap) {
 }
 
 ## =============================================================== Return
-## runleiden, runwalktrap, and mode
+## runleiden, runwalktrap, and data_source
 
 # Save an object to a file
-saveRDS(list(con = con, runleiden = runleiden, runwalktrap = runwalktrap, mode = mode), 
+saveRDS(list(con = con, runleiden = runleiden, runwalktrap = runwalktrap, data_source = data_source), 
  "conos_cluster_output.rds")
 print("saved conos_cluster_output.rds")
 
