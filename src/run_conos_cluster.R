@@ -111,13 +111,13 @@ if (runleiden) {
   }
  }
 
- ## Capture (C)PCA space embedded global leiden communities
- png(paste0("DefaultVIS_", con_space, "_Leiden", resol, "_Clusters.png"), width = 16, 
-  height = 9, units = "in", res = 300)
- print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden"), con$plotGraph(alpha = 0.1, 
-  color.by = "sample", mark.groups = F, show.legend = T, legend.position = "bottom", 
-  legend.title = "")))
- dev.off()
+#  ## Capture (C)PCA space embedded global leiden communities
+#  png(paste0("DefaultVIS_", con_space, "_Leiden", resol, "_Clusters.png"), width = 16, 
+#   height = 9, units = "in", res = 300)
+#  print(cowplot::plot_grid(con$plotGraph(alpha = 0.1, clustering = "leiden"), con$plotGraph(alpha = 0.1, 
+#   color.by = "sample", mark.groups = F, show.legend = T, legend.position = "bottom", 
+#   legend.title = "")))
+#  dev.off()
 
  ## Capture Leiden community composition
  png(paste0("Leiden", resol, "_Cluster_Composition.png"), width = 16, height = 9, 
