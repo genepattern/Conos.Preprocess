@@ -39,3 +39,5 @@ rsconnect/
 job_1234/
 .DS_Store
 data/
+.dockerignore
+ConosPreprocess.zip
