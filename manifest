@@ -118,7 +118,7 @@ p7_value=
 
 privacy=public
 quality=production
-taskDoc=doc.html
+taskDoc=
 taskType=Clustering
 userid=edjuaro
 version=Upgrades on Oct 2021

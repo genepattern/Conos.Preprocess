@@ -41,3 +41,4 @@ job_1234/
 data/
 .dockerignore
 ConosPreprocess.zip
+.idea/
