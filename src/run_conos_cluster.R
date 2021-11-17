@@ -208,12 +208,12 @@ if (runleiden == TRUE) {
 
 if (runwalktrap == TRUE) {
  ## Capture per-sample global walktrap communities in UMAP space
- png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Individual_", emb_space, 
+ png(paste0("Per-sample_Global_Walktrap", stepnum, "_Clusters_Individual_", emb_space, 
   ".png"), width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "walktrap", embedding = persample_emb))
  dev.off()
 
- png(paste0("Per-sample_Global_Walktrap", resol, "_Clusters_Common_UMAP.png"), 
+ png(paste0("Per-sample_Global_Walktrap", stepnum, "_Clusters_Common_UMAP.png"), 
   width = 16, height = 9, units = "in", res = 300)
  print(con$plotPanel(font.size = 4, clustering = "walktrap", use.common.embedding = TRUE))
  dev.off()
