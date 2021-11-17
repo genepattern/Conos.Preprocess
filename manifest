@@ -1,15 +1,15 @@
 #Conos.Preprocess
-#Mon Nov 15 20:51:22 UTC 2021
+#Wed Nov 17 02:45:02 UTC 2021
 JVMLevel=
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:2.1.1
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:2.1.4
 author=Edwin F. Juarez & Anthony Castanza;UCSD -- Mesirov Lab
 categories=clustering;singlecell
 commandLine=Rscript /module/run_conos_preprocess.R --file_list <file_list> --k <knn> --perplexity <perplexity> --pagoda_odgenes <pagoda_odgenes> --projection_method <projection_method> --ncomps <ncomps> --conos_odgenes <conos_odgenes>
 cpuType=any
 description=GenePattern Module which implements the preprocessing and PCA steps of Conos
-documentationUrl=https://genepattern.github.io/Conos.Preprocess/v3/
+documentationUrl=https\://github.com/genepattern/Conos.Preprocess/blob/develop/documentation.md
 fileFormat=png;rds
-job.docker.image=genepattern/conos\:2.1
+job.docker.image=genepattern/conos\:v3
 job.memory=4Gb
 language=any
 name=Conos.Preprocess
@@ -112,4 +112,4 @@ src.repo=
 taskDoc=
 taskType=clustering
 userid=edjuaro
-version=updated doc & docker image
+version=Test Docker image v3 - version control for pkgs
