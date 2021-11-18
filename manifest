@@ -1,7 +1,7 @@
 #Conos.Preprocess
-#Wed Nov 17 02:45:02 UTC 2021
+#Thu Nov 18 23:34:55 UTC 2021
 JVMLevel=
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:2.1.4
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00409\:2.2.1
 author=Edwin F. Juarez & Anthony Castanza;UCSD -- Mesirov Lab
 categories=clustering;singlecell
 commandLine=Rscript /module/run_conos_preprocess.R --file_list <file_list> --k <knn> --perplexity <perplexity> --pagoda_odgenes <pagoda_odgenes> --projection_method <projection_method> --ncomps <ncomps> --conos_odgenes <conos_odgenes>
@@ -18,7 +18,7 @@ p1_MODE=IN
 p1_TYPE=FILE
 p1_default_value=
 p1_description=List of files to load.
-p1_fileFormat=txt
+p1_fileFormat=rds;txt
 p1_flag=--file_list
 p1_name=file_list
 p1_numValues=0+
@@ -106,10 +106,10 @@ p7_prefix_when_specified=
 p7_type=java.lang.String
 p7_value=
 privacy=public
-publicationDate=11/15/2021 14\:02 
+publicationDate=11/16/2021 21\:47 
 quality=preproduction
 src.repo=
 taskDoc=
 taskType=clustering
 userid=edjuaro
-version=Test Docker image v3 - version control for pkgs
+version=updated accepted file formats for input file
