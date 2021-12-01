@@ -80,7 +80,7 @@ print(paste("Finished UMAP Embedding:", Sys.time()))
 
 if (runleiden) {
  print(paste("Finding Leiden Communities:", Sys.time()))
- con$findCommunities(method = leiden.community, resolution = resol)
+ con$findCommunities(method = leiden.community, resolution = resol, min.group.size=2)
 
  if (data_source == "matrix") {
   persample_emb = NULL
@@ -144,7 +144,7 @@ if (runleiden) {
 if (runwalktrap) {
  ## Generate Walktrap clusters
  print(paste("Begin Walktrap:", Sys.time()))
- con$findCommunities(method = igraph::walktrap.community, steps = stepnum)
+ con$findCommunities(method = igraph::walktrap.community, steps = stepnum, min.group.size=2)
  print(paste("Finished Walktrap:", Sys.time()))
 
  print("About to save figures.")
