@@ -30,13 +30,16 @@ See: [https://github.com/kharchenkolab/conos](https://github.com/kharchenkolab/c
 
 **Output**:
 
-The output of the Conos.Preprocess module is an RDS object object that contains the main conos object under $con, the space that was used for the projection under $con_space (PCA or CPCA), and the data source under $data_source (seurat or matrix).
+The primary output of the Conos.Preprocess module is an RDS object object that contains the main conos object under $con, the space that was used for the projection under $con_space (PCA or CPCA), and the data source under $data_source (seurat or matrix).
 
 ```
 # Save an object to a file
 saveRDS(list(con = con, con_space = con_space, data_source = data_source), "conos_preprocess_output.rds")
 print("saved conos_preprocess_output.rds")
 ```
+
+Additionally, a Sample_Independent_Clusters_[x].png file is produced which shows the clusters as present in the original datasets and where X is the embedded space of the original data. As well as a Cell_to_Sample_Memberships.txt file which displays the membership matrix of which cell IDs were obtained from which of the original samples.
+
 
 **Module Language**: R 
 
