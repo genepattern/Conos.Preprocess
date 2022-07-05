@@ -1,0 +1,25 @@
+# Run this gpunit loccaly by calling:
+# ant -f ${GPUNIT_HOME}/build.xml -Dgpunit.diffStripTrailingCR="--strip-trailing-cr" -Dgp.host="127.0.0.1" -Dgp.url="http://127.0.0.1:8080" -Dgp.user="edjuaro@gmail.com" -Dgp.password="" -Dgpunit.testfolder=`pwd` gpunit
+# OR using gp-beta-ami:
+# ant -f ${GPUNIT_HOME}/build.xml -Dgpunit.diffStripTrailingCR="--strip-trailing-cr" -Dgp.host="gp-beta-ami.genepattern.org" -Dgp.url="https://gp-beta-ami.genepattern.org" -Dgp.user="edjuaro" -Dgp.password="**PUT_PASSWORD_HERE" -Dgpunit.testfolder=`pwd` gpunit
+
+#
+# Note: this test uses a custom diff command
+#
+
+name: "Conos_Preprocess_Basic_test_1"
+module: "Conos.Preprocess"
+params:
+    file_list: ["./input/HNSCC_small.txt", "./input/MEL_small.txt"]
+    knn: 40
+    perplexity: 50
+    pagoda_odgenes: 3000
+    projection_method: "PCA"
+    ncomps: 50
+    conos_odgenes: 1000
+assertions:
+  jobStatus: success
+  files:
+    Cell_to_Sample_Memberships.txt: !!null
+    conos_preprocess_output.rds: !!null
+    Sample_Independent_Clusters_tSNE.png: !!null

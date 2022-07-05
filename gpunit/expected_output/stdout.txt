@@ -1,0 +1,83 @@
+[1] "=========================================================="
+[1] "Loading libraries: optparse, Matrix, dplyr, pagoda2, conos"
+[1] "Loaded libraries: optparse, Matrix, dplyr, pagoda2, conos"
+[1] "=========================================================="
+[1] "=========================================================="
+[1] "Parameters used:"
+$help
+[1] FALSE
+
+$file_list
+[1] "/opt/gpbeta_2/gp_home/users/edwin5588/uploads/tmp/run5881616601521721514.tmp/file_list.list.txt"
+
+$k
+[1] 40
+
+$perplexity
+[1] 50
+
+$pagoda_odgenes
+[1] 3000
+
+$projection_method
+[1] "PCA"
+
+$ncomps
+[1] 50
+
+$conos_odgenes
+[1] 1000
+
+[1] "=========================================================="
+[1] "/opt/gpbeta_2/gp_home/users/edwin5588/uploads/tmp/run5881616601521721514.tmp/file_list.list.txt"
+[1] "About to read"
+[1] "/opt/gpbeta_2/gp_home/users/edwin5588/uploads/tmp/run9127139192789690056.tmp/HNSCC_small.txt"
+[1] "Using"                     "HNSCC_small.txt"          
+[3] "as the name of the column"
+[1] "About to read"
+[1] "/opt/gpbeta_2/gp_home/users/edwin5588/uploads/tmp/run8870114206560462920.tmp/MEL_small.txt"
+[1] "Using"                     "MEL_small.txt"            
+[3] "as the name of the column"
+[1] "finished with the panel"
+List of 2
+ $ HNSCC_small.txt:Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+ $ MEL_small.txt  :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+NULL
+[1] "HN28_P15_D06_S330_comb" "HN28_P6_G05_S173_comb"  "HN26_P14_D11_S239_comb"
+[4] "HN26_P14_H05_S281_comb" "HN26_P25_H09_S189_comb" "HN26_P14_H06_S282_comb"
+[1] FALSE
+[1] "About to save figures."
+5308 cells, 498 genes; normalizing ... using plain model winsorizing ... log scale ... done.
+calculating variance fit ... using gam 116 overdispersed genes ... 116 persisting ... done.
+running PCA using 498 OD genes .... done
+creating space of type angular done
+adding data ... done
+building index ... done
+querying ... done
+running tSNE using 1 cores:
+4507 cells, 499 genes; normalizing ... using plain model winsorizing ... log scale ... done.
+calculating variance fit ... using gam 65 overdispersed genes ... 65 persisting ... done.
+running PCA using 499 OD genes .... done
+creating space of type angular done
+adding data ... done
+building index ... done
+querying ... done
+running tSNE using 1 cores:
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  2548349 136.1    4740695 253.2  3876633 207.1
+Vcells 13464091 102.8   25612685 195.5 25612441 195.5
+null device 
+          1 
+[1] "Done saving figures."
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  2670752 142.7    4740695 253.2  4740695 253.2
+Vcells 13776260 105.2   25612685 195.5 25612441 195.5
+found 0 out of 1 cached PCA  space pairs ... running 1 additional PCA  space pairs . done
+inter-sample links using  mNN  . done
+local pairs local pairs .. done
+building graph ..done
+[1] "Finished Projections: 2022-06-28 21:49:13"
+[1] "About to save figures."
+[1] "Done saving figures."
+[1] "saved conos_preprocess_output.rds"
+[1] "Done!"

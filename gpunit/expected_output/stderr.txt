@@ -1,0 +1,33 @@
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Loading required package: igraph
+
+Attaching package: 'igraph'
+
+The following objects are masked from 'package:dplyr':
+
+    as_data_frame, groups, union
+
+The following objects are masked from 'package:stats':
+
+    decompose, spectrum
+
+The following object is masked from 'package:base':
+
+    union
+
+Warning message:
+In .Internal(gc(verbose, reset, full)) :
+  closing unused connection 3 (/opt/gpbeta_2/gp_home/users/edwin5588/uploads/tmp/run5881616601521721514.tmp/file_list.list.txt)
+Warning message:
+In commonOverdispersedGenes(r.n, n.odgenes, verbose = verbose) :
+  samples HNSCC_small.txt and MEL_small.txt do not share enoguh common genes!
